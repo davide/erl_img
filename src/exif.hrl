@@ -3,9 +3,6 @@
 
 %% http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
 
-%% IFD0 usage
--define(ExifOffset, 16#8769).  %%  unsigned long1 Offset to Exif Sub IFD
-
 %% SubExif IFD usage
 -define(ExposureTime,        16#829a).
 -define(FNumber,             16#829d).

@@ -426,6 +426,7 @@ decode_tag(Tag) ->
 	?YCbCrPositioning -> 'YCbCrPositioning';
 	?ReferenceBlackWhite -> 'ReferenceBlackWhite';
 	?Copyright -> 'Copyright';
+	?ExifOffset -> 'ExifOffset';
 	_ -> Tag
     end.
 

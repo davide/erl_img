@@ -105,6 +105,7 @@
 -define(YCbCrPositioning, 531).
 -define(ReferenceBlackWhite, 532).
 -define(Copyright, 33432).    %% ASCII
+-define(ExifOffset, 16#8769).  %%  unsigned long1 Offset to Exif Sub IFD
 
 -endif.
 
