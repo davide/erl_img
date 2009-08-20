@@ -163,35 +163,35 @@ collect_maker_fixme(Fd, T, St) ->
     MakerBin = T#tiff_entry.value,
     case MakerBin of
 	<<"OLYMP",0,1,0,_/binary>> ->
-	    image_tiff:scan_ifd(Fd,
-				[$0,$:|T#tiff_entry.ifd],
-				T#tiff_entry.offs+8,
-				T#tiff_entry.endian,
-				fun collect_olymp/3, St);
+	    tiff:scan_ifd(Fd,
+			  [$0,$:|T#tiff_entry.ifd],
+			  T#tiff_entry.offs+8,
+			  T#tiff_entry.endian,
+			  fun collect_olymp/3, St);
 	<<"Nikon",0,1,0,_/binary>> ->
-	    image_tiff:scan_ifd(Fd,
-				[$0,$:|T#tiff_entry.ifd],
-				T#tiff_entry.offs+8,
-				T#tiff_entry.endian,
-				fun collect_nikon/3, St);
+	    tiff:scan_ifd(Fd,
+			  [$0,$:|T#tiff_entry.ifd],
+			  T#tiff_entry.offs+8,
+			  T#tiff_entry.endian,
+			  fun collect_nikon/3, St);
 	<<"SONY DSC ",0,0,0,_/binary>> ->
 	    %% NOT working - what is SONY doing ?
-	    image_tiff:scan_ifd(Fd,
-				[$0,$:|T#tiff_entry.ifd],
-				T#tiff_entry.offs+14,
-				T#tiff_entry.endian,
-				fun collect_sony/3, St);
+	    tiff:scan_ifd(Fd,
+			  [$0,$:|T#tiff_entry.ifd],
+			  T#tiff_entry.offs+14,
+			  T#tiff_entry.endian,
+			  fun collect_sony/3, St);
 	<<"FUJIFILM",Offset:32/little>> ->
-	    image_tiff:scan_ifd_bin(MakerBin, 
-				    [$0,$:|T#tiff_entry.ifd],
-				    Offset, little,
-				    fun collect_fujifilm/3, St);
+	    tiff:scan_ifd_bin(MakerBin, 
+			      [$0,$:|T#tiff_entry.ifd],
+			      Offset, little,
+			      fun collect_fujifilm/3, St);
 	_ ->
-	    image_tiff:scan_ifd(Fd,
-				[$0,$:|T#tiff_entry.ifd],
-				T#tiff_entry.offs+8,
-				T#tiff_entry.endian,
-				fun collect_other/3, St)
+	    tiff:scan_ifd(Fd,
+			  [$0,$:|T#tiff_entry.ifd],
+			  T#tiff_entry.offs+8,
+			  T#tiff_entry.endian,
+			  fun collect_other/3, St)
     end.
 
 
@@ -203,7 +203,7 @@ collect_exif(Fd, T, St) ->
 	?ExifInteroperabilityOffset ->
 	    [Offset] = T#tiff_entry.value,
 	    %% could be handle by a collect_interop?
-	    case image_tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
+	    case tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
 				     Offset, T#tiff_entry.endian,
 				     fun collect_exif/3, St) of
 		{ok, St1} ->
@@ -225,7 +225,7 @@ collect_exif(Fd, T, St) ->
 
 %% Image info collector functions
 collect_tiff(Fd, T, St) ->
-    Key = image_tiff:decode_tag(T#tiff_entry.tag),
+    Key = tiff:decode_tag(T#tiff_entry.tag),
     ?dbg("TIFF(~s) ~p ~p ~p\n", 
 	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
     case T#tiff_entry.tag of
@@ -257,7 +257,7 @@ collect_tiff(Fd, T, St) ->
 	    end;
 	?ExifOffset ->
 	    [Offset] = T#tiff_entry.value,
-	    case image_tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
+	    case tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
 				     Offset, T#tiff_entry.endian,
 				     fun collect_exif/3, St) of
 		{ok, St1} ->
@@ -267,7 +267,7 @@ collect_tiff(Fd, T, St) ->
 	    end;
 	?GPSInfo ->
 	    [Offset] = T#tiff_entry.value,
-	    case image_tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
+	    case tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
 				     Offset, T#tiff_entry.endian,
 				     fun gpsinfo:collect_gpsinfo/3, []) of
 		{ok, GPSInfo} ->
