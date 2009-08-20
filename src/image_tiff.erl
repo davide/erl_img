@@ -203,7 +203,7 @@ dump_fun(_Fd, T, St) ->
     io:format("~s ~s ~w\n", [Key,T#tiff_entry.type,T#tiff_entry.value]),
     St.
 
-dump_binary(Bin) when binary(Bin) ->
+dump_binary(Bin) when is_binary(Bin) ->
     scan_binary(Bin, fun dump_fun/3, ok).
 
 dump_file(File) ->
@@ -566,9 +566,9 @@ undo_differencing(Data,_,_,_) ->
     Data.
 
 undo_differencing4(Data, Width) ->
-    if binary(Data) ->
+    if is_binary(Data) ->
 	    undo_differencing4(0, Width, binary_to_list(Data),0,0,0,0, []);
-       list(Data) ->
+       is_list(Data) ->
 	    undo_differencing4(0, Width, Data, 0,0,0,0, [])
     end.
 
@@ -587,9 +587,9 @@ undo_differencing4(_, _, [], _,_,_,_, Ack) ->
 
 
 undo_differencing3(Data, Width) ->
-    if binary(Data) ->
+    if is_binary(Data) ->
 	    undo_differencing3(0, Width, binary_to_list(Data),0,0,0, []);
-       list(Data) ->
+       is_list(Data) ->
 	    undo_differencing3(0, Width, Data, 0, 0, 0, [])
     end.
 

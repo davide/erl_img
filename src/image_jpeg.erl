@@ -27,8 +27,8 @@
 
 
 
-magic(<<?M_SOI:16,?M_APP1:16,Len:16,"Exif",0,0,_/binary>>) -> true;
-magic(<<?M_SOI:16,?M_JFIF:16,Len:16,"JFIF",_,_,_/binary>>) -> true;
+magic(<<?M_SOI:16,?M_APP1:16,_Len:16,"Exif",0,0,_/binary>>) -> true;
+magic(<<?M_SOI:16,?M_JFIF:16,_Len:16,"JFIF",_,_,_/binary>>) -> true;
 magic(_) -> false.
 
 mime_type() -> "image/jpeg".
@@ -48,17 +48,17 @@ read_info(Fd) ->
 	Error -> Error
     end.
 
-write_info(Fd, IMG) ->
+write_info(_Fd, _IMG) ->
     ok.
 
 
-read(Fd,IMG) ->
+read(_Fd,IMG) ->
     {ok,IMG}.
 
-read(Fd,IMG,RowFun,St0) ->
+read(_Fd,IMG,_RowFun,_St0) ->
     {ok,IMG}.
 
-write(Fd,IMG) ->
+write(_Fd,_IMG) ->
     ok.
 
 
@@ -81,7 +81,7 @@ read_section(Fd,Marker,Len,IMG) ->
 		{ok,Bin} ->
 		    read_sections(Fd, IMG#erl_image {comment=
 						   binary_to_list(Bin)});
-		Error ->
+		_Error ->
 		    {error, bad_file}
 	    end;
        Marker == ?M_APP1 ->
@@ -115,47 +115,47 @@ read_section(Fd,Marker,Len,IMG) ->
 	    read_sections(Fd, IMG)
     end.
 
-process_sofn(<<Depth:8,Height:16,Width:16,Components:8,Bin/binary>>, IMG) ->
+process_sofn(<<Depth:8,Height:16,Width:16,_Components:8,_Bin/binary>>, IMG) ->
     IMG#erl_image { depth  = Depth,
 		  height = Height,
 		  width  = Width }.
 
 %% Maker OLYMP
-collect_olymp(Fd, T, St) ->
-    Key = erl_img:hex16(T#tiff_entry.tag),
+collect_olymp(_Fd, T, St) ->
+    _Key = erl_img:hex16(T#tiff_entry.tag),
     ?dbg("OLYMP(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	[T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     St.
 
 %% Maker Nikon
-collect_nikon(Fd, T, St) ->
-    Key = erl_img:hex16(T#tiff_entry.tag),
+collect_nikon(_Fd, T, St) ->
+    _Key = erl_img:hex16(T#tiff_entry.tag),
     ?dbg("Nikon(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	[T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     St.
 
 %% Maker FUJIFILM
-collect_fujifilm(Fd, T, St) ->
-    Key = erl_img:hex16(T#tiff_entry.tag),
+collect_fujifilm(_Fd, T, St) ->
+    _Key = erl_img:hex16(T#tiff_entry.tag),
     ?dbg("Fujifilm(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	[T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     St.
 
 %% Maker Sony DSC
-collect_sony(Fd, T, St) ->
-    Key = erl_img:hex16(T#tiff_entry.tag),
+collect_sony(_Fd, T, St) ->
+    _Key = erl_img:hex16(T#tiff_entry.tag),
     ?dbg("Sony(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	[T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     St.    
 
 %% Maker other
-collect_other(Fd, T, St) ->
-    Key = erl_img:hex16(T#tiff_entry.tag),
+collect_other(_Fd, T, St) ->
+    _Key = erl_img:hex16(T#tiff_entry.tag),
     ?dbg("Maker(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	[T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     St.
 
-collect_maker(Fd, T, St) ->
+collect_maker(_Fd, _T, St) ->
     {ok, St}.
 
 collect_maker_fixme(Fd, T, St) ->
@@ -196,9 +196,9 @@ collect_maker_fixme(Fd, T, St) ->
 
 
 collect_exif(Fd, T, St) ->
-    Key = exif:decode_tag(T#tiff_entry.tag),
+    _Key = exif:decode_tag(T#tiff_entry.tag),
     ?dbg("EXIF(~s) ~p ~p ~p\n", 
-	[T#tiff_entry.ifd,Key,T#tiff_entry.type, T#tiff_entry.value]),
+	 [T#tiff_entry.ifd,_Key,T#tiff_entry.type, T#tiff_entry.value]),
     case T#tiff_entry.tag of
 	?ExifInteroperabilityOffset ->
 	    [Offset] = T#tiff_entry.value,
@@ -208,14 +208,14 @@ collect_exif(Fd, T, St) ->
 				     fun collect_exif/3, St) of
 		{ok, St1} ->
 		    St1;
-		Error ->
+		_Error ->
 		    St
 	    end;
 	?MakerNote ->
 	    case collect_maker(Fd, T, St) of
 		{ok,St1} ->
 		    St1;
-		Error ->
+		_Error ->
 		    St
 	    end;
 	_ ->
@@ -262,7 +262,7 @@ collect_tiff(Fd, T, St) ->
 				     fun collect_exif/3, St) of
 		{ok, St1} ->
 		    St1;
-		Error ->
+		_Error ->
 		    St
 	    end;
 	_ ->
@@ -275,6 +275,6 @@ process_exif(Bin, IMG) ->
     case image_tiff:scan_binary(Bin, fun collect_tiff/3, IMG) of
 	{ok, IMG1} ->
 	    IMG1;
-	Error ->
+	_Error ->
 	    IMG
     end.
