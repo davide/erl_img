@@ -1,6 +1,8 @@
 -ifndef(__IMAGE_EXIF_HRL__).
 -define(__IMAGE_EXIF_HRL__, true).
 
+%% http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
+
 %% IFD0 usage
 -define(ExifOffset, 16#8769).  %%  unsigned long1 Offset to Exif Sub IFD
 
@@ -52,7 +54,7 @@
 -define(InteroperabilityVersion, 16#0002 ).
 -define(RelatedImageFileFormat, 16#1000 ).
 -define(RelatedImageWidth, 16#1001 ).
--define(RelatedImageLength, 16#1001 ).
+-define(RelatedImageLength, 16#1002 ). %% a.k.a. RelatedImageHeight
 
 %% Other tags
 
