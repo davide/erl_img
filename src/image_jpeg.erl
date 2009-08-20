@@ -269,9 +269,10 @@ collect_tiff(Fd, T, St) ->
 	    [Offset] = T#tiff_entry.value,
 	    case image_tiff:scan_ifd(Fd, [$0,$.|T#tiff_entry.ifd],
 				     Offset, T#tiff_entry.endian,
-				     fun gpsinfo:collect_gpsinfo/3, St) of
-		{ok, St1} ->
-		    St1;
+				     fun gpsinfo:collect_gpsinfo/3, []) of
+		{ok, GPSInfo} ->
+		    As = St#erl_image.attributes,
+		    St#erl_image { attributes = [{'GPSInfo', GPSInfo}|As]};
 		_Error ->
 		    St
 	    end;

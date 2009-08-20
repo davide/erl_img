@@ -11,15 +11,11 @@
 -include("tiff.hrl").
 -include("dbg.hrl").
 
-collect_gpsinfo(_Fd, T, St) ->
-    _Key = decode_tag(T#tiff_entry.tag),
+collect_gpsinfo(_Fd, T, Info) ->
+    Key = decode_tag(T#tiff_entry.tag),
     ?dbg("GPS_INFO(~s) ~p ~p ~p\n", 
-	 [T#tiff_entry.ifd,_Key,T#tiff_entry.type,T#tiff_entry.value]),
-    case T#tiff_entry.tag of
-	_ ->
-	    St
-    end.
-
+	 [T#tiff_entry.ifd,Key,T#tiff_entry.type,T#tiff_entry.value]),
+    [{Key,T#tiff_entry.value} | Info].
 
 decode_tag(Tag) when is_integer(Tag) ->
     case Tag of
