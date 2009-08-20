@@ -55,6 +55,12 @@
 
 %% Other tags
 
+%% http://www.awaresystems.be/imaging/tiff/tifftags/privateifd/gps.html
+%% http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/GPS.html
+-ifndef(GPSInfo).
+-define(GPSInfo, 16#8825).
+-endif.
+
 %% FIXME add OLYMP
 
 

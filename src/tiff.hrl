@@ -107,6 +107,10 @@
 -define(Copyright, 33432).    %% ASCII
 -define(ExifOffset, 16#8769).  %%  unsigned long1 Offset to Exif Sub IFD
 
+-ifndef(GPSInfo).
+-define(GPSInfo, 16#8825).
+-endif.
+
 -endif.
 
 

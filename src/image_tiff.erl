@@ -427,6 +427,7 @@ decode_tag(Tag) ->
 	?ReferenceBlackWhite -> 'ReferenceBlackWhite';
 	?Copyright -> 'Copyright';
 	?ExifOffset -> 'ExifOffset';
+	?GPSInfo -> 'GPSInfo';
 	_ -> Tag
     end.
 
